@@ -4,40 +4,129 @@ A hands-on cybersecurity lab focused on network intrusion detection, security mo
 
 Project Overview
 
-This project demonstrates the deployment and configuration of a Snort-based Intrusion Detection System within a multi-VM cybersecurity lab.
+This project demonstrates the deployment and configuration of a Snort-based Intrusion Detection System within a multi-VM cybersecurity lab using VirtualBox.
 
-The lab was designed to simulate network reconnaissance and common attack activity while monitoring traffic, generating alerts, analyzing detections, and evaluating the effectiveness of IDS rules.
+The environment uses Kali Purple as the traffic-generation and security-testing system and Ubuntu Linux as the monitored system running Snort IDS.
+
+The lab is designed to simulate network reconnaissance and common attack activity while monitoring traffic, generating alerts, analyzing detections, and evaluating the effectiveness of custom Snort rules.
+
+Lab Architecture
+
+┌──────────────────────────────┐
+│          VirtualBox          │
+│                              │
+│  Kali Purple                 │
+│  Traffic/Test VM             │
+│       │                      │
+│       │ Virtual Network      │
+│       ▼                      │
+│  Ubuntu                      │
+│  ┌────────────────────────┐  │
+│  │        Snort IDS       │  │
+│  │                        │  │
+│  │ Ping Detection         │  │
+│  │ Port Scan Detection    │  │
+│  │ SSH Brute-Force Alert  │  │
+│  │ SQLi Detection         │  │
+│  │ ICMP Flood Detection   │  │
+│  │ File Transfer Alert    │  │
+│  └────────────────────────┘  │
+└──────────────────────────────┘
+
+Traffic Flow
+
+Kali Purple
+Traffic / Security Testing
+        │
+        │ Controlled Lab Traffic
+        ▼
+Ubuntu Linux
+        │
+        ▼
+Snort IDS
+        │
+        ├── Packet Inspection
+        ├── Custom Rule Matching
+        ├── Alert Generation
+        └── Security Event Logging
+
+All testing is performed inside an authorized and isolated VirtualBox environment.
 
 Lab Objectives
 
 * Configure a multi-VM cybersecurity environment using VirtualBox
-* Deploy and configure Snort IDS
+* Deploy and configure Snort IDS on Ubuntu
+* Use Kali Purple as a controlled security-testing system
 * Create and configure custom Snort detection rules
 * Capture and review Snort alerts and logs
 * Practice intrusion detection and threat analysis
 * Perform vulnerability assessments against lab systems
 * Simulate common attack techniques in a controlled environment
-* Evaluate the IDS response to different types of malicious or suspicious activity
+* Evaluate IDS responses to suspicious or malicious activity
 * Document findings in a structured lab report
 
 Tools & Technologies
 
 * Snort IDS
+* Kali Purple
+* Ubuntu Linux
 * VirtualBox
 * Nmap
 * Lynis
-* Linux virtual machines
+* Linux networking
 * Network traffic analysis
 * Custom Snort rules
 * IDS alert logging
 
+Snort Detection Rules
+
+Custom Snort rules are used to identify different types of network activity generated from the Kali Purple testing VM.
+
+ICMP Ping Detection
+
+Detects ICMP Echo Request traffic sent toward the monitored Ubuntu system.
+
+This provides a basic introduction to identifying network discovery and reconnaissance activity.
+
+Port Scan Detection
+
+Monitors network traffic for patterns associated with port scanning and reconnaissance.
+
+Port scanning tests are used to determine whether Snort can identify suspicious attempts to discover exposed services.
+
+SSH Brute-Force Alert
+
+Monitors repeated connection attempts directed toward the SSH service.
+
+The rule identifies network behavior that may be consistent with brute-force activity.
+
+Snort detects the network connection pattern, while authentication logs can be reviewed separately to determine whether login attempts actually failed.
+
+SQL Injection Detection
+
+Custom HTTP rules are used to identify basic request patterns associated with SQL injection attempts.
+
+This demonstrates application-layer traffic inspection and signature-based detection.
+
+ICMP Flood Detection
+
+Monitors the frequency of ICMP Echo Requests and generates an alert when traffic exceeds a configured threshold.
+
+This helps demonstrate rate-based detection of potential denial-of-service activity.
+
+File Transfer Alert
+
+Monitors network traffic for selected file-transfer indicators.
+
+This provides experience using Snort to identify potentially suspicious file activity moving across the network.
+
 Vulnerability Assessment
 
-Vulnerability and exposure assessments were performed against systems within the isolated lab environment.
+Vulnerability and exposure assessments are performed against systems within the isolated lab environment.
 
 Nmap
 
-Nmap was used for:
+Nmap is used for:
 
 * Host discovery
 * Port scanning
@@ -45,65 +134,130 @@ Nmap was used for:
 * Network reconnaissance
 * Identifying exposed network services
 
+The resulting traffic can also be analyzed by Snort to evaluate how effectively reconnaissance activity is detected.
+
 Lynis
 
-Lynis was used to perform security auditing and vulnerability assessment of Linux systems within the lab.
+Lynis is used to perform security auditing and vulnerability assessment of Linux systems within the lab.
 
-The results helped identify potential weaknesses, configuration issues, and areas where system security could be improved.
+The results help identify:
+
+* Potential security weaknesses
+* Configuration issues
+* System-hardening opportunities
+* Areas where security controls could be improved
 
 Intrusion Detection Testing
 
-Several controlled attack scenarios were simulated to determine how effectively Snort could identify suspicious or malicious behavior.
+Controlled security scenarios are generated from Kali Purple to determine how effectively Snort identifies suspicious activity.
 
-Testing included:
+Testing includes:
+
+Ping / ICMP Reconnaissance
+
+ICMP traffic is generated from Kali Purple toward the Ubuntu system.
+
+Snort monitors the traffic and generates alerts when configured ICMP rules are matched.
 
 Port Scanning
 
-Network reconnaissance and port scanning activity was generated to determine whether Snort could identify scanning behavior and produce appropriate alerts.
+Network reconnaissance and port-scanning activity is generated to determine whether Snort can recognize scanning patterns and produce appropriate alerts.
 
 Brute-Force Activity
 
-Repeated authentication attempts were simulated in the lab to evaluate IDS visibility into potential brute-force activity.
+Repeated authentication-related connection attempts are simulated to evaluate IDS visibility into behavior potentially associated with brute-force attacks.
 
-Malware Execution Simulation
+SQL Injection Activity
 
-Controlled malware-related activity was performed within the isolated environment to evaluate the IDS system’s ability to recognize associated suspicious network behavior.
+Basic SQL injection patterns are sent toward test web services to evaluate application-layer Snort detection rules.
+
+ICMP Flood Activity
+
+Higher-frequency ICMP traffic is generated in the controlled lab to evaluate threshold-based alerting.
+
+File Transfer Monitoring
+
+Controlled file transfers are monitored to determine whether configured Snort signatures recognize selected file-transfer indicators.
+
+Malware-Related Traffic Simulation
+
+Controlled malware-related network activity can be simulated within the isolated environment to evaluate Snort’s ability to recognize associated suspicious traffic.
 
 Snort Configuration
 
-Snort was configured to:
+Snort is configured to:
 
 * Monitor network traffic
-* Apply detection rules to observed packets
-* Generate alerts when rule conditions were met
-* Log security events for later investigation
+* Inspect packets entering the Ubuntu system
+* Apply detection rules to observed traffic
+* Generate alerts when rule conditions are met
+* Log security events for investigation
 * Support custom rules for lab-specific detection scenarios
+* Detect both individual signatures and repeated traffic patterns
 
-Custom Snort rules were used to better understand how network signatures are constructed and how rule configuration affects detection.
+Custom Snort rules are used to develop a better understanding of how IDS signatures are constructed and how rule configuration affects detection.
+
+Detection Workflow
+
+Kali Purple
+     │
+     │ Generates Controlled Traffic
+     ▼
+VirtualBox Network
+     │
+     ▼
+Ubuntu + Snort IDS
+     │
+     ├── Capture Traffic
+     │
+     ├── Inspect Packets
+     │
+     ├── Compare Against Rules
+     │
+     ▼
+Detection Match
+     │
+     ▼
+Snort Alert
+     │
+     ├── Source IP
+     ├── Destination IP
+     ├── Protocol
+     ├── Detection Rule
+     └── Timestamp
+     │
+     ▼
+Security Analysis
 
 Threat Analysis
 
-Generated alerts were reviewed to determine:
+Generated alerts are reviewed to determine:
 
 * What activity triggered the alert
 * Which Snort rule detected the event
-* The source and destination involved
+* The source and destination systems involved
+* The protocol associated with the traffic
 * The type of network activity observed
-* Whether the detection accurately represented the simulated attack
-* How effectively the IDS detected each attack scenario
+* Whether the alert accurately represented the simulated activity
+* How effectively the IDS detected each test scenario
+* Whether the rule produced false positives
+* How the detection rule could be improved
 
 Lab Reporting
 
-A lab report was created documenting the findings from each attack scenario.
+A lab report documents findings from each attack or detection scenario.
 
-The report evaluated:
+The report evaluates:
 
-* Attack type
+* Attack or traffic type
 * Detection method
+* Snort rule used
 * Snort alerts generated
 * Relevant log information
+* Source and destination systems
 * IDS effectiveness
 * Observed weaknesses or limitations
+* False positives
 * Potential detection improvements
 
 Skills Demonstrated
@@ -111,14 +265,17 @@ Skills Demonstrated
 This project demonstrates practical experience with:
 
 * Intrusion Detection Systems
-* Snort configuration
+* Snort IDS configuration
 * Snort rule development
+* Signature-based detection
+* Threshold-based detection
 * Security monitoring
 * Network reconnaissance
 * Vulnerability scanning
 * Threat analysis
 * Alert investigation
 * Log analysis
+* Linux networking
 * Virtualized cybersecurity labs
 * Network security
 * Defensive security testing
@@ -126,10 +283,28 @@ This project demonstrates practical experience with:
 
 Project Purpose
 
-The purpose of this project was to gain hands-on experience with defensive cybersecurity operations by building an isolated environment where network attacks could be safely simulated, detected, analyzed, and documented.
+The purpose of this project is to gain hands-on experience with defensive cybersecurity operations by building an isolated environment where network attacks and suspicious traffic can be safely simulated, detected, analyzed, and documented.
 
-The project provided practical experience with the workflow used by security analysts when identifying suspicious network activity and investigating IDS alerts.
+The project provides practical experience with a security-analysis workflow:
+
+Generate Traffic
+      ↓
+Detect Activity
+      ↓
+Generate Alert
+      ↓
+Analyze Event
+      ↓
+Determine Cause
+      ↓
+Evaluate Detection
+      ↓
+Improve Rule
+      ↓
+Document Findings
+
+This workflow reflects fundamental responsibilities involved in network security monitoring and intrusion detection.
 
 Disclaimer
 
-All scanning, attack simulation, and security testing associated with this project was performed in an authorized, isolated lab environment for educational and cybersecurity training purposes.
+All scanning, attack simulation, network testing, and security testing associated with this project is performed only within an authorized, isolated lab environment for educational and cybersecurity training purposes.
